@@ -66,6 +66,4 @@ if __name__ == "__main__":
     passwordchoice()
 
 
-
-
-#test 
+#This an very cool password generator 
