@@ -191,7 +191,7 @@ class PasswordGenerator(QWidget):
             QPushButton:hover {
                 background-color: #d6d6d6;
             }
-            QTextEdit, QLineEdit, QSpinBox, QComboBox {
+            QTextEdit, QLineEdit, QSpinBox, QComboBox {z
                 background-color: #ffffff;
                 border: 1px solid #cccccc;
             }
