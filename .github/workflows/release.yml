@@ -1,0 +1,51 @@
+name: Build and Release EXE
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:  # allows manual trigger for testing
+
+permissions:
+  contents: write  # required for creating releases
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller
+          if (Test-Path requirements.txt) { pip install -r requirements.txt }
+
+      - name: Build EXE
+        run: |
+          $TAG = "${{ github.ref_name }}"
+          Write-Host "Building EXE for tag: $TAG"
+          pyinstaller --onefile --name "Password-Generator-$TAG" Password-Generator.py
+
+      - name: List dist contents
+        run: |
+          Write-Host "dist contents:"
+          Get-ChildItem -Path dist -ErrorAction SilentlyContinue
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.exe
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
